@@ -1,23 +1,44 @@
-// Deliver a customized EDID to the host computer.
-// Uses an Attiny1404, with standard I2C wiring.
-// Set to turn off millis() timer and set 16MHz 
+// 1. Deliver a customized EDID to the host computer
+// 2. Create a CSYNC signal from HSYNC/VSYNC
+// Uses an Attiny1604, with standard I2C wiring.
+// Set to turn off millis() timer and clock speed must be 20MHz 
 
 void setup() 
 {
   CLKCTRL.MCLKCTRLB = B00000000; // use full system clock for peripherials
-  pinMode(8, INPUT); // pin A1 (HSYNC) 
+  pinMode(8, INPUT); // pin A1 (HSYNC)
   pinMode(9, INPUT); // pin A2 (VSYNC)
   pinMode(0, OUTPUT);  // CSYNC
   digitalWrite(0,LOW);
-    
+  pinMode(7,INPUT_PULLUP); // pin B0 (SCL)
+  pinMode(6,INPUT_PULLUP); // pin B1 (SDA)
+
   startcsync();
   starti2c();
 }
 
+
+void startcsync()
+{
+  // set up async channel 0 to feed the hsync input pin into timer B and to LUT0
+  EVSYS.ASYNCCH0 = 0x0B;   // HSYNC from pin A1
+  EVSYS.ASYNCUSER0 = 0x03; // timer B uses async channel 0 as input
+  EVSYS.ASYNCUSER2 = 0x03; // LUT0 uses async channel 0 as event source 0
+  // configure timer B to generate a longer pulse for each incomming HSYNC
+  TCB0.CCMP = 1025;        // duration of single-shot pulse  
+  TCB0.CTRLA = B00000001;  // enable timer B at full speed
+  TCB0.CTRLB = 0x06;       // single-shot mode
+  TCB0.EVCTRL = B01000001;  // start at positive edge
+  // combine signals in asynchronous LUT
+  CCL.LUT0CTRLB   = 0x73;       // input 1 from from timer B and HSYNC via its event source 0  
+  CCL.LUT0CTRLC   = 0x00;       // don't usee
+  CCL.TRUTH0      = B10101010;  // truth table to take HSYNC directly 
+  CCL.LUT0CTRLA   = B00001001;  // enable LUT0 and dedicated output pin
+  CCL.CTRLA = B00000001;        // enable CCL  
+}
+
 void loop() 
 {
-  for (;;)
-  {
     // wait for falling edge on HSYNC (A1)
     while (PORTA.IN & B00000010);
     CCL.CTRLA = B00000000;   // disable CCL to modify the LUT definition
@@ -38,26 +59,6 @@ void loop()
       CCL.LUT0CTRLA = B00001001;  
       CCL.CTRLA = B00000001;      
     }
-  }
-}
-
-void startcsync()
-{
-  // set up async channel 0 to feed the hsync input pin into timer B and to LUT0
-  EVSYS.ASYNCCH0 = 0x0B;   // HSYNC from pin A1
-  EVSYS.ASYNCUSER0 = 0x03; // timer B uses async channel 0 as input
-  EVSYS.ASYNCUSER2 = 0x03; // LUT0 uses async channel 0 as event source 0
-  // configure timer B to generate a longer pulse for each incomming HSYNC
-  TCB0.CCMP = 820;         // duration of single-shot pulse  
-  TCB0.CTRLA = B00000001;  // enable timer B at full speed
-  TCB0.CTRLB = 0x06;       // single-shot mode
-  TCB0.EVCTRL = B01000001;  // start at positive edge
-  // combine signals in asynchronous LUT
-  CCL.LUT0CTRLB   = 0x73;       // input 1 from from timer B and HSYNC via its event source 0  
-  CCL.LUT0CTRLC   = 0x00;       // don't usee
-  CCL.TRUTH0      = B10101010;  // truth table to take HSYNC directly 
-  CCL.LUT0CTRLA   = B00001001;  // enable LUT0 and dedicated output pin
-  CCL.CTRLA = B00000001;        // enable CCL  
 }
 
 
@@ -104,9 +105,9 @@ ISR(TWI0_TWIS_vect)
     break;
   case B10000010:     // data interrupt when reading
   case B10000011:
-    TWI0.SDATA = edid[registeraddress & 0x7F];   // allready does ACK
+    TWI0.SDATA = edid[registeraddress & 0x7F];   // already does ACK
     registeraddress++;
     return;
   }
-  TWI0.SCTRLB = 0x03;  // acknowledge every case
+  TWI0.SCTRLB = 0x03;  // acknowledge every other case
 }
