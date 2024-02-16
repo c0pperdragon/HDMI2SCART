@@ -1,0 +1,11 @@
+Product name                     Audio    HDMI    VGA     EDID type       IC         Compatible   Monitor sense
+Omivine HDMI auf VGA Kabel       no       cable   plug    X               ASL ?      yes
+JAMEGA                           yes      socket  plug    A               CM6616SE   no
+LWMTT HDMI zu VGA                yes      cable   socket  A               CM6616SE   no
+RETOO Adapter HDMI to VGA        yes      socket  plug    A                          no
+Rankie 1080P Active              yes      cable   socket  B (= similar A)            no
+Ziyan HDMI zu VGA Adapter        yes      socket  plug    C               ASL CS5213 yes
+VIEVRE XBOX,HDTV und mehr        yes      socket  plug    C                          yes         
+Ziyan HDMI zu VGA                yes      plug    socket  D (= similar A)            yes?        no
+dynattenik HDMI to VGA w/ Audio  yes      cable   socket  C                          yes         yes
+ICZI HDMI Female to VGA Male     yes      socket  cable   E (= nearly B)             no          
