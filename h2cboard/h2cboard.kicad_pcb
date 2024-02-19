@@ -5,6 +5,11 @@
   )
 
   (paper "A4")
+  (title_block
+    (title "HDMI2SCART")
+    (rev "1")
+  )
+
   (layers
     (0 "F.Cu" signal)
     (31 "B.Cu" signal)
@@ -53,7 +58,7 @@
     )
     (pad_to_mask_clearance 0)
     (pcbplotparams
-      (layerselection 0x00010fc_ffffffff)
+      (layerselection 0x00010f8_ffffffff)
       (disableapertmacros false)
       (usegerberextensions false)
       (usegerberattributes true)
@@ -81,9 +86,9 @@
       (subtractmaskfromsilk false)
       (outputformat 1)
       (mirror false)
-      (drillshape 1)
+      (drillshape 0)
       (scaleselection 1)
-      (outputdirectory "")
+      (outputdirectory "./gerber")
     )
   )
 
@@ -801,9 +806,9 @@
     (fp_line (start -1 -0.625) (end 1 -0.625) (layer "F.Fab") (width 0.1) (tstamp 940afdc6-9e23-457a-afdd-27ced83f66dd))
     (fp_line (start -1 0.625) (end -1 -0.625) (layer "F.Fab") (width 0.1) (tstamp a5b04cee-e92c-4be8-ba97-86f602e51bfc))
     (fp_line (start 1 -0.625) (end 1 0.625) (layer "F.Fab") (width 0.1) (tstamp dce385a1-25f3-4e62-a176-4e0ae4e47ace))
-    (pad "1" smd roundrect (at -0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902)
+    (pad "1" smd roundrect (at -0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902439)
       (net 32 "Net-(J3-Pad16)") (pintype "passive") (tstamp b11bb230-d293-423a-8c44-49cac4d1f3b3))
-    (pad "2" smd roundrect (at 0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902)
+    (pad "2" smd roundrect (at 0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902439)
       (net 3 "+5V") (pintype "passive") (tstamp 6f1fb206-2d5a-4119-9baa-3a0737fb7884))
     (model "${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl"
       (offset (xyz 0 0 0))
@@ -1124,9 +1129,9 @@
     (fp_line (start 1 -0.625) (end 1 0.625) (layer "F.Fab") (width 0.1) (tstamp 1c07ef72-7d9b-4d97-90bf-a9d977ba8042))
     (fp_line (start 1 0.625) (end -1 0.625) (layer "F.Fab") (width 0.1) (tstamp b0b2ec0f-910a-4687-a6a3-4aba0711c6bc))
     (fp_line (start -1 -0.625) (end 1 -0.625) (layer "F.Fab") (width 0.1) (tstamp ffcac3a8-e971-4be8-b345-c7149d5929e1))
-    (pad "1" smd roundrect (at -0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902)
+    (pad "1" smd roundrect (at -0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902439)
       (net 36 "Net-(R3-Pad1)") (pintype "passive") (tstamp 174188a2-ba98-4dfe-998f-56b163c6c4af))
-    (pad "2" smd roundrect (at 0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902)
+    (pad "2" smd roundrect (at 0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902439)
       (net 34 "/CSYNC") (pintype "passive") (tstamp b7295c8e-44a1-4a93-98d0-8561bea9efc3))
     (model "${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl"
       (offset (xyz 0 0 0))
@@ -1250,9 +1255,9 @@
     (fp_line (start -1 0.625) (end -1 -0.625) (layer "F.Fab") (width 0.1) (tstamp 5eb7d502-986f-43d2-ac62-8ea35e4482bd))
     (fp_line (start -1 -0.625) (end 1 -0.625) (layer "F.Fab") (width 0.1) (tstamp 832ec6e0-891f-4120-b033-b633e67e9708))
     (fp_line (start 1 -0.625) (end 1 0.625) (layer "F.Fab") (width 0.1) (tstamp ba8933d2-7dec-4ffd-8469-ad3a9b09c231))
-    (pad "1" smd roundrect (at -0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902)
+    (pad "1" smd roundrect (at -0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902439)
       (net 34 "/CSYNC") (pintype "passive") (tstamp f778643e-2d54-4906-89d7-a6ad8d0200a7))
-    (pad "2" smd roundrect (at 0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902)
+    (pad "2" smd roundrect (at 0.9125 0) (size 1.025 1.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.243902439)
       (net 1 "GND") (pintype "passive") (tstamp 53c7da00-4082-4113-923d-fc04e4cef13e))
     (model "${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl"
       (offset (xyz 0 0 0))
@@ -1399,6 +1404,9 @@
   (gr_line (start 130.8 98) (end 130.8 99) (layer "Edge.Cuts") (width 0.1) (tstamp df6931a0-2fdd-4cb8-8825-6836a60e2c83))
   (gr_line (start 166 72) (end 166 99) (layer "Edge.Cuts") (width 0.1) (tstamp e857a0f4-1e11-42dd-917a-bba5531c7a8f))
   (gr_line (start 135.2 99) (end 166 99) (layer "Edge.Cuts") (width 0.1) (tstamp fabc233c-dcf6-45a0-945a-f1ff51a4e377))
+  (gr_text "HDMI2SCART Rev 1\n© 2024 c0pperdragon" (at 152.4 88.2) (layer "B.SilkS") (tstamp 7e175250-38b2-4b94-929f-3569c234012c)
+    (effects (font (size 1.5 1.5) (thickness 0.2)) (justify mirror))
+  )
 
   (segment (start 154.25 91.7) (end 154.25 93.25) (width 0.3) (layer "F.Cu") (net 1) (tstamp 01c0c526-06d0-46fe-b4d9-e16f32d9ccf4))
   (segment (start 138.515498 76.215998) (end 136.635 74.3355) (width 0.3) (layer "F.Cu") (net 1) (tstamp 0a0f4bdb-4b5c-4f24-bc9d-45b47f950c7f))
