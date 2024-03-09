@@ -1,9 +1,11 @@
-// Provide additional functionaliy to make the HDMItoVGA adapter generate a SCART output signal.
-// There are two basic task, that the microcontroller has to do:
+
+// Provide additional functionality to make the HDMItoVGA adapter generate a SCART output signal.
+// There are three basic task, that the microcontroller has to do:
 // 1. Deliver a EDID to the host signalling a 288p/240p display.
 // 2. Synthesize a CSYNC signal from HSYNC/VSYNC
+// 3. Turn hot-plug detection off/on on change of mode selector
 //
-// Uses an Attiny1604, with standard I2C wiring.
+// Uses an Attiny1604, with standard I2C wiring, 20Mhz
 
 void setup() 
 {
@@ -25,32 +27,91 @@ void setup()
   starti2c();
 }
 
-// de-assert hot-plug detection for half a second when changing 60Hz selector
+// continue monitoring the hsync and vsync inputs to measure their polarity
 void loop()
 {
-  byte pin = digitalRead(3);
+  bool hsync_pos = false;
+  bool vsync_pos = false;
+  bool h;
+  bool v;
+  byte selector = digitalRead(3);
   for (;;)
   {
-    byte now = digitalRead(3);
-    if (now!=pin) 
+    // sample vsync and hsync many times to decide polarity
+    unsigned int i,j;
+    unsigned int h_highcounter=0;
+    unsigned int h_lowcounter=0;
+    unsigned int v_highcounter=0;
+    unsigned int v_lowcounter=0;
+    for (i=0; i<1500; i++)
     {
-      digitalWrite(5, LOW);
-      delay(500);
-      digitalWrite(5, HIGH);      
-      pin = now;
+      if (digitalRead(9)==LOW) { h_lowcounter++; }
+      else                     { h_highcounter++; }
+      if (digitalRead(8)==LOW) { v_lowcounter++; }
+      else                     { v_highcounter++; }
+    }    
+    // when some polarity is different than what is set, change input setting
+    h = (h_highcounter < h_lowcounter);
+    v = (v_highcounter < v_lowcounter);
+    if ((h!=hsync_pos) || (v!=vsync_pos)) {
+      setinputpolarity(h,v);
+      hsync_pos = h;
+      vsync_pos = v;
+    }
+    // test for change of selector switch and emmit low level on device detection pin
+    if (digitalRead(3) != selector) 
+    {
+      digitalWrite(5,LOW);
+      for (j=0; j<30; j++) for (i=0; i<10000; i++) { digitalRead(3); }  // for 0.5 s delay
+      digitalWrite(5,HIGH);
+      selector = digitalRead(3);
     }
   }
 }
 
-// set up programmable logic to make simple XNOR combination for CSYNC
+// set up programmable logic to synthesize csync from VSYNC and HSYNC (negative polarity by default)
 void startcsync()
 {
-  // combine signals in asynchronous LUT
-  CCL.LUT0CTRLB   = 0x50;       // input 1 from PA1, input 0 unused  
-  CCL.LUT0CTRLC   = 0x05;       // input 2 from PA2
-  CCL.TRUTH0      = B11000011;  // truth table for XNOR of input 1 and 2 
+  // configure LUT1 to invert incomming HSYNC from PA2 and provide signal on async channel 1
+  EVSYS.ASYNCCH0 = 0x0C;        // async channel 0 use data from PA2
+  EVSYS.ASYNCUSER3 = 0x3;       // EV0 input for LUT1 is taken from async channel 0
+  CCL.LUT1CTRLB   = 0x03;       // input 1 unused, input 0 from EV0 input  
+  CCL.LUT1CTRLC   = 0x00;       // input 2 unused
+  CCL.TRUTH1      = B01010101;  // truth table for negation of input 0 
+  CCL.LUT1CTRLA   = B00000001;  // enable LUT1 (but not output pin)
+  EVSYS.ASYNCCH1 = 0x02;        // async channel 1 use data from LUT1 
+  // set up timer B in single-shot mode to make an extended hsync signal for use during vsync if needed
+  EVSYS.ASYNCUSER0 = 0x04;  // timer B is event user of async channel 1 
+  TCB0.CTRLA = 0x01;        // enable timer B, using full peripherial clock
+  TCB0.CTRLB = 0x06;        // single-shot mode, nothing fancy extra
+  TCB0.EVCTRL = 0x01;       // capture positive edge 
+  TCB0.CCMP = 1100;         // nominally 55us duration of single-shot pulse 
+  // finally combine signals in asynchronous LUT to use the one-shot pulse during vsync, otherwise the hsync
+  EVSYS.ASYNCUSER2 = 0x04;      // EV0 input for LUT0 is taken from async channel 1
+  CCL.LUT0CTRLB   = 0x57;       // input 1 from PA1, input 0 from TCB state
+  CCL.LUT0CTRLC   = 0x03;       // input 2 from EV0 input which is async channel 1 (from LUT1)
+  CCL.TRUTH0      = B00001101;  // truth table for using negative vsync input
   CCL.LUT0CTRLA   = B00001001;  // enable LUT0 and dedicated output pin
-  CCL.CTRLA = B00000001;        // enable CCL  
+  // turn on CCL
+  CCL.CTRLA = B00000001;        // enable CCL in general
+}
+
+// change input polarity 
+void setinputpolarity(bool hsync_pos, bool vsync_pos)
+{
+  // turn off CCL to allow modification
+  CCL.CTRLA = B00000000;       
+
+  CCL.LUT1CTRLA   = B00000000;  // disable LUT1 to allow modification
+  CCL.TRUTH1 = hsync_pos ? B10101010 : B01010101;   // optional negation of hsync input 
+  CCL.LUT1CTRLA   = B00000001;  //  enable LUT1 again
+
+  CCL.LUT0CTRLA   = B00000000;  // disable LUT0 to allow modification
+  CCL.TRUTH0 = vsync_pos ? B00000111 : B00001101;   // two possible tables 
+  CCL.LUT0CTRLA   = B00001001;  //  enable LUT0 again (with output to pin)
+
+  // turn on CCL
+  CCL.CTRLA = B00000001;       
 }
 
 
@@ -115,7 +176,6 @@ uint8_t edid60hz[256] = {
   0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
   0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00  
 };
-
 
 void calculate_checksums()
 {
