@@ -5,7 +5,7 @@ LWMTT HDMI zu VGA                yes      cable   socket  A               CM6616
 RETOO Adapter HDMI to VGA        yes      socket  plug    A                          no
 Rankie 1080P Active              yes      cable   socket  B (= similar A)            no
 Ziyan HDMI zu VGA Adapter        yes      socket  plug    C               ASL CS5213 yes
-VIEVRE XBOX,HDTV und mehr        yes      socket  plug    C               MX9292     yes         
+VIEVRE XBOX,HDTV und mehr        yes      socket  plug    C               MX9292     yes   (actually used)       
 Ziyan HDMI zu VGA                yes      plug    socket  D (= similar A)            yes?        
 dynattenik HDMI to VGA w/ Audio  yes      cable   socket  C                          yes         
 ICZI HDMI Female to VGA Male     yes      socket  cable   E (= nearly B)             no          
