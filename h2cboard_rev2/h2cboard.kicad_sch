@@ -8674,7 +8674,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_DFN_QFN:QFN-32-1EP_5x5mm_P0.5mm_EP3.65x3.65mm_ThermalVias"
+		(property "Footprint" "footprints:QFN-32-1EP_5x5mm_P0.5mm_EP3.1x3.1mm_ThermalVias"
 			(at 104.14 92.71 0)
 			(effects
 				(font
