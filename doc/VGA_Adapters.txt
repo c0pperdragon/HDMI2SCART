@@ -15,3 +15,4 @@ deleyCON MK4394                  yes      plug    socket  E (= nearly B)        
 Compatible chips
 ASL CS5213  
 MX9292
+NX3303X
