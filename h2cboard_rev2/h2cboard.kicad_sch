@@ -8,8 +8,8 @@
 		(title "HDMI2SCART")
 		(rev "2")
 		(comment 1 "botched in to the audio output.")
-		(comment 2 "2 100nF capacitors to ground need to be ")
-		(comment 3 "To suppress hissing noise on the audio, ")
+		(comment 2 "2 10nF capacitors to ground need to be ")
+		(comment 3 "To suppress hissing and crackling noise on the audio, ")
 	)
 	(lib_symbols
 		(symbol "Connector:AudioJack3_Ground_SwitchTR"
